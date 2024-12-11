@@ -1,4 +1,9 @@
-import { getAvailableNewsMonths, getNewsForYear, getNewsForYearAndMonth, getAvailableNewsYears } from "@/lib/news";
+import {
+  getAvailableNewsMonths,
+  getNewsForYear,
+  getNewsForYearAndMonth,
+  getAvailableNewsYears,
+} from "@/lib/news";
 import NewsList from "@/components/news/news-list";
 import Link from "next/link";
 
@@ -18,14 +23,21 @@ export default function FilteredNewsPage({ params }) {
 
   if (selectedYear && selectedMonth) {
     news = getNewsForYearAndMonth(selectedYear, selectedMonth);
-    links =  [];
+    links = [];
   }
-
 
   let newsContent = <p>No news found for the selected period.</p>;
 
   if (news && news.length > 0) {
     newsContent = <NewsList news={news} />;
+  }
+
+  if (
+    (!selectedYear && !getAvailableNewsYears().includes(+selectedYear)) ||
+    (selectedMonth &&
+      !getAvailableNewsMonths(selectedYear).includes(+selectedMonth))
+  ) {
+    throw new Error("Invalid filter.");
   }
 
   return (
